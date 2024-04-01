@@ -1,5 +1,7 @@
 package org.mps.deque;
 
+import java.util.Comparator;
+
 /*
  * Marta Granado Rodriguez
  */
@@ -87,5 +89,68 @@ public class DoubleLinkedList<T> implements DoubleLinkedQueue<T> {
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public T get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        LinkedNode<T> current = first;
+        for (int i = 0; i < index; i++) {
+            current = current.getNext(); // looks for the value in all the LinkedNode
+        }
+        return current.getItem();
+    }
+
+    @Override
+    public boolean contains(T value) {
+        LinkedNode<T> current = first;
+        while (current != null) {
+            if (current.getItem().equals(value)) { // if it has thta value, it returns of
+                return true;
+            }
+            current = current.getNext(); // else it will continue searching
+        }
+        return false;
+    }
+
+    @Override
+    public void remove(T value) {
+        LinkedNode<T> current = first;
+        while (current != null) {
+            if (current.getItem().equals(value)) {
+                if (current == first) {
+                    deleteFirst();
+                } else if (current == last) {
+                    deleteLast();
+                } else {
+                    current.getPrevious().setNext(current.getNext()); // elimina el actual
+                    current.getNext().setPrevious(current.getPrevious());
+                    size--;
+                }
+                return;
+            }
+            current = current.getNext();
+        }
+    }
+
+    @Override
+    public void sort(Comparator<? super T> comparator) {
+        boolean swapped = false;
+        do {
+            LinkedNode<T> current = first;
+            while (current != null && current.getNext() != null) {
+                if (comparator.compare(current.getItem(), current.getNext().getItem()) > 0) {
+                    // Devuelve un integer negativo, 0 o positivo, si el 1er arg es menor, igual o
+                    // mayor que el 2o
+                    T temp = current.getItem();
+                    current.setItem(current.getNext().getItem());
+                    current.getNext().setItem(temp);
+                    swapped = true;
+                }
+                current = current.getNext();
+            }
+        } while (swapped);
     }
 }
