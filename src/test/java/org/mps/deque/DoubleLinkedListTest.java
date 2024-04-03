@@ -91,8 +91,8 @@ public class DoubleLinkedListTest {
             list.deleteFirst();
 
             assertEquals(0, list.size());
-            assertNull(list.first());
-            assertNull(list.last());
+            assertThrows(DoubleLinkedQueueException.class, list::first);
+            assertThrows(DoubleLinkedQueueException.class, list::last);
         }
 
         @Test
@@ -126,8 +126,9 @@ public class DoubleLinkedListTest {
             list.deleteLast();
 
             assertEquals(0, list.size());
-            assertNull(list.first());
-            assertNull(list.last());
+
+            assertThrows(DoubleLinkedQueueException.class, list::first);
+            assertThrows(DoubleLinkedQueueException.class, list::last);
         }
 
         @Test
@@ -163,12 +164,12 @@ public class DoubleLinkedListTest {
     }
 
     @Nested
-    @DisplayName("Operaciones de búsqueda, eliminación y ordenamiento")
+    @DisplayName("Operaciones get, remove y sort")
     class Operaciones {
 
         @Test
-        @DisplayName("Obtiene el elemento en una posición específica")
-        void get_DevuelveValorCorrecto() {
+        @DisplayName("Obtiene el elemento en una posición específica de forma correcta")
+        void get_TieneVariosElementos_DevuelveValorCorrecto() {
             DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
             list.append(10);
             list.append(20);
@@ -179,16 +180,17 @@ public class DoubleLinkedListTest {
 
         @Test
         @DisplayName("Lanza IndexOutOfBoundsException si se intenta obtener un elemento fuera de los límites")
-        void get_ElementoFueraDeLimites_LanzaIndexOutOfBoundsException() {
+        void get_ElementoFueraDeLimites_ThrowsIndexOutOfBoundsException() {
             DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
             list.append(10);
 
             assertThrows(IndexOutOfBoundsException.class, () -> list.get(1));
+            assertThrows(IndexOutOfBoundsException.class, () -> list.get(-1));
         }
 
         @Test
         @DisplayName("Comprueba si un elemento está presente en la lista")
-        void contains_DevuelveValorCorrecto() {
+        void contains_TieneVariosElementos_DevuelveValorCorrecto() {
             DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
             list.append(10);
             list.append(20);
@@ -199,8 +201,47 @@ public class DoubleLinkedListTest {
         }
 
         @Test
-        @DisplayName("Elimina un elemento presente en la lista")
-        void remove_EliminaElementoExistente_ListaActualizada() {
+        @DisplayName("No hace nada si el elemento a eliminar no está presente en la lista")
+        void remove_ListaVacia_DevuelveValorCorrecto() {
+            DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
+
+            list.append(10);
+            list.append(20);
+
+            list.remove(40);
+
+            assertEquals(2, list.size());
+            assertTrue(list.contains(10));
+            assertTrue(list.contains(20));
+        }
+
+        @Test
+        @DisplayName("Elimina el elemento presente en una lista con un solo elemento y la deja vacia")
+        void remove_TieneUnElemento_DevuelveValorCorrecto() {
+            DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
+            list.append(10);
+
+            list.remove(10);
+
+            assertEquals(0, list.size());
+            assertFalse(list.contains(10));
+        }
+
+        @Test
+        @DisplayName("Elimina un elemento presente en una lista con 2 elementos")
+        void remove_TieneDosElementos_DevuelveValorCorrecto() {
+            DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
+            list.append(10);
+            list.append(20);
+
+            list.remove(20);
+
+            assertEquals(1, list.size());
+        }
+
+        @Test
+        @DisplayName("Elimina un elemento presente en la lista y asigna nuevos elementos como primero o último en caso de que sea necesario")
+        void remove_TieneMultiplesElementos_DevuelveValorCorrecto() {
             DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
             list.append(10);
             list.append(20);
@@ -208,26 +249,14 @@ public class DoubleLinkedListTest {
 
             list.remove(20);
 
-            assertFalse(list.contains(20));
             assertEquals(2, list.size());
-        }
-
-        @Test
-        @DisplayName("No hace nada si el elemento a eliminar no está presente en la lista")
-        void remove_ElementoNoPresente_NoCambiaLaLista() {
-            DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
-            list.append(10);
-            list.append(20);
-            list.append(30);
-
-            list.remove(40);
-
-            assertEquals(3, list.size());
+            assertEquals(10, list.first());
+            assertEquals(30, list.last());
         }
 
         @Test
         @DisplayName("Ordena la lista según el comparador proporcionado")
-        void sort_OrdenaListaCorrectamente() {
+        void sort_TieneVariosElementos_DevuelveValorCorrecto() {
             DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
             list.append(30);
             list.append(10);

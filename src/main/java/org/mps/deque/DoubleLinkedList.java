@@ -1,7 +1,6 @@
 package org.mps.deque;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -140,21 +139,20 @@ public class DoubleLinkedList<T> implements DoubleLinkedQueue<T> {
 
     @Override
     public void sort(Comparator<? super T> comparator) {
-        if (size > 1) {
-            List<T> list = new ArrayList<>();
-            LinkedNode<T> current = first;
-            while (current != null) {
-                list.add(current.getItem());
-                current = current.getNext();
-            }
-
-            list.sort(comparator);
-
-            current = first;
-            for (T t : list) {
-                current.setItem(t);
-                current = current.getNext();
-            }
+        List<T> list = new ArrayList<>();
+        LinkedNode<T> current = first;
+        while (current != null) {
+            list.add(current.getItem());
+            current = current.getNext();
         }
+
+        list.sort(comparator);
+
+        current = first;
+        for (T t : list) {
+            current.setItem(t);
+            current = current.getNext();
+        }
+
     }
 }
