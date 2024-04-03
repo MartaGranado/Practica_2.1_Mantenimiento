@@ -27,8 +27,8 @@ public class DoubleLinkedListTest {
             DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
 
             assertEquals(0, list.size());
-            assertNull(list.first());
-            assertNull(list.last());
+            assertThrows(DoubleLinkedQueueException.class, list::first);
+            assertThrows(DoubleLinkedQueueException.class, list::last);
         }
     }
 
@@ -133,10 +133,9 @@ public class DoubleLinkedListTest {
         @Test
         @DisplayName("Lanza DoubleLinkedQueueException al intentar eliminar el ultimo elemento de una lista vacia")
         void deleteLast_ListaVacia_ThrowsDoubleLinkedQueueException() {
-            // Arrange
+
             DoubleLinkedList<Integer> list = new DoubleLinkedList<>();
 
-            // Act & Assert
             assertThrows(DoubleLinkedQueueException.class, list::deleteLast);
         }
 
